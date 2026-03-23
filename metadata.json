@@ -1,0 +1,5 @@
+{
+  "name": "HealthMate",
+  "description": "A comprehensive health management app with medication reminders, AI-powered injury scanning, and emergency support.",
+  "requestFramePermissions": ["camera", "geolocation"]
+}

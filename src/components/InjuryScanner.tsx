@@ -13,7 +13,8 @@ export default function InjuryScanner() {
   const [image, setImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<InjuryAnalysis | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,33 +49,62 @@ export default function InjuryScanner() {
           <Camera size={32} />
         </div>
         <h2 className="text-xl font-bold text-slate-900">Injury Scanner</h2>
-        <p className="text-sm text-slate-500 max-w-xs">Take a photo of a minor injury for basic first aid guidance.</p>
+        <p className="text-sm text-slate-500 max-w-xs">Take a photo or upload an image of a minor injury for basic first aid guidance.</p>
       </div>
 
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
         <div 
-          onClick={() => fileInputRef.current?.click()}
-          className="aspect-square rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer overflow-hidden relative group"
+          className="aspect-square rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center overflow-hidden relative group"
         >
           {image ? (
             <>
               <img src={image} alt="Injury" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <p className="text-white font-bold text-sm">Change Photo</p>
+              <div 
+                onClick={() => setImage(null)}
+                className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+              >
+                <p className="text-white font-bold text-sm">Remove Photo</p>
               </div>
             </>
           ) : (
-            <>
-              <Upload className="text-slate-300 mb-2" size={32} />
-              <p className="text-slate-400 font-medium text-sm">Tap to upload or take photo</p>
-            </>
+            <div className="flex flex-col items-center gap-4 w-full px-6 text-center">
+              <Upload className="text-slate-300 mb-2" size={48} />
+              <div className="grid grid-cols-1 gap-3 w-full">
+                <button 
+                  onClick={() => cameraInputRef.current?.click()}
+                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-emerald-50 text-emerald-600 font-bold text-sm border border-emerald-100"
+                >
+                  <Camera size={18} />
+                  Take Photo
+                </button>
+                <button 
+                  onClick={() => galleryInputRef.current?.click()}
+                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-blue-50 text-blue-600 font-bold text-sm border border-blue-100"
+                >
+                  <Upload size={18} />
+                  Upload from Gallery
+                </button>
+              </div>
+              <p className="text-slate-400 font-medium text-[10px] uppercase tracking-wider">Supports images, documents, and files</p>
+            </div>
           )}
+          
+          {/* Camera Input */}
           <input 
             type="file" 
             accept="image/*" 
             capture="environment" 
             className="hidden" 
-            ref={fileInputRef}
+            ref={cameraInputRef}
+            onChange={handleImageUpload}
+          />
+          
+          {/* Gallery/File Input */}
+          <input 
+            type="file" 
+            accept="image/*,application/pdf" 
+            className="hidden" 
+            ref={galleryInputRef}
             onChange={handleImageUpload}
           />
         </div>
